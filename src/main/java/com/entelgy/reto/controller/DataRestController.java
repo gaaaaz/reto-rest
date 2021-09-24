@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,10 @@ public class DataRestController {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<Original> response = restTemplate.getForEntity(url, Original.class);
+		
+		if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
+			return new ResponseEntity<String>(response.getBody().toString(), response.getStatusCode());
+		}
 		
 		List<Data> newResponse = dataService.getResponseStructure(response.getBody());
 		
